@@ -1,5 +1,8 @@
 from Models.drnn import DRNN
 from Models import es_model
+from data_prep import load_data
+import pandas as pd
+import torch
 
 train_epochs = 23
 seasonality = 52
@@ -18,12 +21,14 @@ topn = 3
 init_learning_rate = 1e-3
 
 # Load and process data
-
-smooth_model = es_model.ES_series(seasonality=seasonality)
+train_samples, test_samples = load_data()
+smooth_model = es_model.ES_series(train_samples, seasonality=seasonality)
 smooth_input = smooth_model.forecast_data()
-
+result_series = pd.Series([])
 model = DRNN(n_input, n_hidden, n_layers, cell_type, dilation=[1, 52])
-pred_res = model(smooth_input)
+for i in range(len(smooth_input)):
+    pred_res = model(torch.Tensor(smooth_input[i,:]))
+    result_series.add(pred_res)
 
 
 
