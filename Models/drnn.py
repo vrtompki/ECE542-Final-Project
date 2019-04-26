@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.autograd as autograd
 
-use_cuda = torch.cuda.is_available()
+use_cuda = False#torch.cuda.is_available()
 
 
 class DRNN(nn.Module):
